@@ -1,0 +1,13 @@
+name: ToyChest
+main: org.nationsatwar.toychest.ToyChest
+version: 1.0
+
+commands:
+  tag:
+    description: Displays all ToyChest commands.
+    permission: toychest.basic
+    usage: /<command>
+    
+permissions:
+  toychest.*:
+    description: Gives access to all ToyChest commands
