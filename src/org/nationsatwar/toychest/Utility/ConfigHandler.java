@@ -11,6 +11,9 @@ import org.nationsatwar.toychest.ToyChest;
 public final class ConfigHandler {
 
 	public static final String itemType = "Item Type";
+	public static final String enabled = "Enabled";
+	
+	public static final String itemDamage = "Item.Damage";
 	
 	private static final String toyChestPath = "plugins/ToyChest/";
 	private static final String toyChestExtension = ".yml";
@@ -20,13 +23,13 @@ public final class ConfigHandler {
 	/**
 	 * Creates all the default Toy Chest Files
 	 */
-	public static void createDefaultSumoFiles() {
+	public static void createDefaultToyChestFiles() {
 		
 		// Create necessary folders
-		File sumoDirectory = new File(toyChestPath);
+		File toyChestDirectory = new File(toyChestPath);
 		
-		if (!sumoDirectory.exists())
-			sumoDirectory.mkdir();
+		if (!toyChestDirectory.exists())
+			toyChestDirectory.mkdir();
 		
 		// Create default Toy Chest Files
 		createToyChestFile("IRON_SWORD");
@@ -34,11 +37,19 @@ public final class ConfigHandler {
 	}
 
 	/**
+	 * Reloads all the toys into the plugin
+	 */
+	public static void reloadToys() {
+		
+		
+	}
+
+	/**
 	 * Gets the full Toy Chest path
 	 */
-	public static String getFullToyChestPath(String sumoName) {
+	public static String getFullToyChestPath(String itemName) {
 		
-		return toyChestPath + sumoName + toyChestExtension;
+		return toyChestPath + itemName + toyChestExtension;
 	}
 
 	/**
@@ -48,14 +59,17 @@ public final class ConfigHandler {
 	 */
 	private static void createToyChestFile(String itemName) {
 		
-		String fullSumoPath = toyChestPath + itemName + toyChestExtension;
-	    File sumoFile = new File(fullSumoPath);
+		String fullToyChestPath = toyChestPath + itemName + toyChestExtension;
+	    File toyChestFile = new File(fullToyChestPath);
 		
-	    FileConfiguration toyChestConfig = YamlConfiguration.loadConfiguration(sumoFile);
+	    FileConfiguration toyChestConfig = YamlConfiguration.loadConfiguration(toyChestFile);
 	    FileConfigurationOptions toyChestConfigOptions = toyChestConfig.options();
 
 	    // Creates default config parameters on creation
 	    toyChestConfig.addDefault(itemType, itemName);
+	    toyChestConfig.addDefault(enabled, false);
+
+	    toyChestConfig.addDefault(itemDamage, 5);
 	    
 	    toyChestConfigOptions.copyDefaults(true);
 	    
@@ -65,7 +79,7 @@ public final class ConfigHandler {
 	    toyChestConfigOptions.copyHeader(true);
 	    
 	    // Save the file
-	    try { toyChestConfig.save(sumoFile); }
+	    try { toyChestConfig.save(toyChestFile); }
 	    catch (IOException e) { ToyChest.log("Error saving config file: " + e.getMessage()); }
 	}
 }
