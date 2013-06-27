@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.nationsatwar.toychest.ToyChest;
 
 public final class CommandParser implements CommandExecutor {
-
+	
 	protected final ToyChest plugin;
 	
 	public CommandParser(ToyChest plugin) {
@@ -67,6 +67,6 @@ public final class CommandParser implements CommandExecutor {
 			return;
 		}
 		
-		ConfigHandler.reloadToys();
+		ConfigHandler.reloadToys(plugin);
 	}
 }

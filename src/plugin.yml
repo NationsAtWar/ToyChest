@@ -3,7 +3,7 @@ main: org.nationsatwar.toychest.ToyChest
 version: 1.0
 
 commands:
-  tag:
+  toychest:
     description: Displays all ToyChest commands.
     permission: toychest.basic
     usage: /<command>

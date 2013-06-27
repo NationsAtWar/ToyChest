@@ -6,18 +6,23 @@ import java.io.IOException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.FileConfigurationOptions;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.nationsatwar.toychest.Toy;
 import org.nationsatwar.toychest.ToyChest;
 
 public final class ConfigHandler {
-
-	public static final String itemType = "Item Type";
-	public static final String enabled = "Enabled";
 	
-	public static final String itemDamage = "Item.Damage";
+	// Toy Settings
+	private static final String itemType = "Item Type";
+	private static final String enabled = "Enabled";
 	
+	// Toy Properties
+	private static final String itemDamage = "Item.Damage";
+	
+	// File Paths
 	private static final String toyChestPath = "plugins/ToyChest/";
 	private static final String toyChestExtension = ".yml";
 	
+	// Miscellaneous Strings
 	private static final String lineBreak = "\r\n";
 
 	/**
@@ -35,15 +40,40 @@ public final class ConfigHandler {
 		createToyChestFile("IRON_SWORD");
 		createToyChestFile("DIAMOND_SWORD");
 	}
-
+	
 	/**
 	 * Reloads all the toys into the plugin
 	 */
-	public static void reloadToys() {
+	public static void reloadToys(ToyChest plugin) {
 		
+		plugin.manager.emptyToychest();
 		
+		// Cycle through Toychest directory
+		File toyChestDirectory = new File(toyChestPath);
+		
+		for (File toychestFile : toyChestDirectory.listFiles()) {
+			
+			if (toychestFile.isFile()) {
+				
+				FileConfiguration toychestConfig = YamlConfiguration.loadConfiguration(toychestFile);
+				
+				// If file is valid, create Toy
+				if (toychestConfig.contains(itemType) && toychestConfig.getBoolean(enabled)) {
+					
+					String toyName = toychestConfig.getString(itemType);
+					Toy toy = new Toy(toyName);
+					
+					// Set all properties here
+					toy.setDamage(toychestConfig.getInt(itemDamage));
+					
+					plugin.manager.addToy(toy);
+				}
+			}
+		}
+		
+		ToyChest.log(plugin.manager.toychest.toString());
 	}
-
+	
 	/**
 	 * Gets the full Toy Chest path
 	 */
@@ -51,7 +81,7 @@ public final class ConfigHandler {
 		
 		return toyChestPath + itemName + toyChestExtension;
 	}
-
+	
 	/**
 	 * Creates a ToyChest File
 	 * 
@@ -59,8 +89,7 @@ public final class ConfigHandler {
 	 */
 	private static void createToyChestFile(String itemName) {
 		
-		String fullToyChestPath = toyChestPath + itemName + toyChestExtension;
-	    File toyChestFile = new File(fullToyChestPath);
+	    File toyChestFile = new File(getFullToyChestPath(itemName));
 		
 	    FileConfiguration toyChestConfig = YamlConfiguration.loadConfiguration(toyChestFile);
 	    FileConfigurationOptions toyChestConfigOptions = toyChestConfig.options();
