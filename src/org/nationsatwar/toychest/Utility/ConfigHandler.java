@@ -3,6 +3,7 @@ package org.nationsatwar.toychest.Utility;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.FileConfigurationOptions;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,6 +18,11 @@ public final class ConfigHandler {
 	
 	// Toy Properties
 	private static final String itemDamage = "Item.Damage";
+	
+	// Custom Properties
+	private static final String customRange = "Custom.Range";
+	private static final String customWidth = "Custom.Width";
+	private static final String customHeight = "Custom.Height";
 	
 	// File Paths
 	private static final String toyChestPath = "plugins/ToyChest/";
@@ -63,15 +69,19 @@ public final class ConfigHandler {
 					String toyName = toychestConfig.getString(itemType);
 					Toy toy = new Toy(toyName);
 					
-					// Set all properties here
+					// Set toy properties here
 					toy.setDamage(toychestConfig.getInt(itemDamage));
+					
+					// Set custom properties here
+					ConfigurationSection customValues = toychestConfig.getConfigurationSection("Custom");
+					
+					for (String key : customValues.getKeys(true))
+						toy.addCustomValue(key, customValues.get(key));
 					
 					plugin.manager.addToy(toy);
 				}
 			}
 		}
-		
-		ToyChest.log(plugin.manager.toychest.toString());
 	}
 	
 	/**
@@ -99,6 +109,10 @@ public final class ConfigHandler {
 	    toyChestConfig.addDefault(enabled, false);
 
 	    toyChestConfig.addDefault(itemDamage, 5);
+
+	    toyChestConfig.addDefault(customRange, 3);
+	    toyChestConfig.addDefault(customWidth, 3);
+	    toyChestConfig.addDefault(customHeight, 3);
 	    
 	    toyChestConfigOptions.copyDefaults(true);
 	    
