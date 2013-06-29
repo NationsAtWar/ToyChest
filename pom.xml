@@ -3,73 +3,26 @@
   <groupId>ToyChest</groupId>
   <artifactId>ToyChest</artifactId>
   <version>0.1.0-SNAPSHOT</version>
-  <properties>
-    <forge.api.version>1.2.3.Final</forge.api.version>
-    <maven.compiler.version>2.3.2</maven.compiler.version>
-    <jboss.jee6.version>3.0.1.Final</jboss.jee6.version>
-  </properties>
+
+  <parent>
+    <groupId>net.md-5</groupId>
+    <artifactId>ForgeMod</artifactId>
+    <version>1.5.2-7.8.1-SNAPSHOT</version>
+  </parent>
+
   <repositories>
     <repository>
-      <id>JBOSS_NEXUS</id>
-      <url>http://repository.jboss.org/nexus/content/groups/public</url>
+      <id>sonatype-oss-public</id>
+      <url>https://oss.sonatype.org/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </repository>
   </repositories>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss.spec</groupId>
-        <artifactId>jboss-javaee-6.0</artifactId>
-        <version>${jboss.jee6.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.forge</groupId>
-        <artifactId>forge-shell-api</artifactId>
-        <version>${forge.api.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.forge</groupId>
-        <artifactId>forge-test-harness</artifactId>
-        <version>${forge.api.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.forge</groupId>
-        <artifactId>forge-shell</artifactId>
-        <version>${forge.api.version}</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.annotation</groupId>
-      <artifactId>jboss-annotations-api_1.1_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.forge</groupId>
-      <artifactId>forge-shell-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.forge</groupId>
-      <artifactId>forge-test-harness</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.forge</groupId>
-      <artifactId>forge-shell</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  
   <build>
     <resources>
       <resource>
