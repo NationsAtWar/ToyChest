@@ -12,10 +12,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.StepSound;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -30,6 +34,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * The ToyChest parent class.
@@ -70,8 +75,11 @@ public class ToyChest {
 		proxy.registerRenderers();
 
 		// Creates all the default Toy Chest Items packaged with the plugin
-		ConfigHandler.createDefaultToyChestFiles();
-		ConfigHandler.reloadToys(this);
+		if (isServer()) {
+			
+			ConfigHandler.createDefaultToyChestFiles();
+			ConfigHandler.reloadToys(this);
+		}
 	}
 	
 	@PostInit
@@ -95,5 +103,24 @@ public class ToyChest {
 
 		log.info("ToyChest: " + logMessage);
 		System.out.println("ToyChest: " + logMessage);
+	}
+	
+	/**
+	 * Returns true if the script is currently handling server code
+	 * 
+	 * @return True is server, false otherwise
+	 */
+	public static boolean isServer() {
+		
+		Side side = FMLCommonHandler.instance().getEffectiveSide();
+		
+		if (side == Side.SERVER)
+			return true;
+		else if (side == Side.CLIENT)
+			return false;
+		else
+			log("Something horrible has happened...");
+		
+		return false;
 	}
 }

@@ -21,9 +21,9 @@ public final class ConfigHandler {
 	private static final String itemDamage = "Item.Damage";
 	
 	// Custom Properties
-	private static final String customRange = "Custom.Range";
-	private static final String customWidth = "Custom.Width";
-	private static final String customHeight = "Custom.Height";
+	private static final String attackRange = "attackRange";
+	private static final String attackWidth = "attackWidth";
+	private static final String attackHeight = "attackHeight";
 	
 	// File Paths
 	private static final String toyChestPath = "plugins/ToyChest/";
@@ -31,6 +31,7 @@ public final class ConfigHandler {
 	
 	// Miscellaneous Strings
 	private static final String generalCategory = Configuration.CATEGORY_GENERAL;
+	private static final String customCategory = "Custom";
 	private static final String lineBreak = "\r\n";
 
 	/**
@@ -59,15 +60,7 @@ public final class ConfigHandler {
 		// Cycle through Toychest directory
 		File toyChestDirectory = new File(toyChestPath);
 		
-		plugin.log(toyChestPath);
-		plugin.log(toyChestDirectory.getPath());
 		plugin.log(toyChestDirectory.getAbsolutePath());
-		try {
-			plugin.log(toyChestDirectory.getCanonicalPath());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		for (File toychestFile : toyChestDirectory.listFiles()) {
 			
@@ -75,10 +68,10 @@ public final class ConfigHandler {
 				
 				Configuration toychestConfig = new Configuration(toychestFile);
 				
+				toychestConfig.load();
+				
                 Property itemTypeProp = toychestConfig.get(generalCategory, itemType, "null");
                 Property enabledProp = toychestConfig.get(generalCategory, enabled, "null");
-                
-                itemTypeProp.comment = "Placeholder blah blah blah";
 
 				// If file is valid, create Toy
 				if (toychestConfig.hasKey(generalCategory, itemType) &&
@@ -99,7 +92,11 @@ public final class ConfigHandler {
 						toy.addCustomValue(key, customCategory.get(key));
 					
 					plugin.manager.addToy(toy);
+					
+					plugin.log("Range: " + toy.getCustomValue("attackRange"));
 				}
+				
+				toychestConfig.save();
 			}
 		}
 	}
@@ -122,6 +119,8 @@ public final class ConfigHandler {
 	    File toychestFile = new File(getFullToyChestPath(itemName));
 		
 		Configuration toychestConfig = new Configuration(toychestFile);
+		
+		toychestConfig.load();
 
 	    // Creates default config parameters on creation
 		toychestConfig.get(generalCategory, itemType, itemName);
@@ -129,12 +128,9 @@ public final class ConfigHandler {
 
 		toychestConfig.get(generalCategory, itemDamage, 5);
 
-		toychestConfig.get(generalCategory, customRange, 3);
-		toychestConfig.get(generalCategory, customWidth, 3);
-		toychestConfig.get(generalCategory, customHeight, 3);
-	    
-	    // Add header to config file
-	    String header = "Toy Chest Config File" + lineBreak;
+		toychestConfig.get(customCategory, attackRange, 3);
+		toychestConfig.get(customCategory, attackWidth, 3);
+		toychestConfig.get(customCategory, attackHeight, 3);
 	    
 	    toychestConfig.save();
 	}

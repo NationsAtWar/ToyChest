@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.nationsatwar.toychest.ToyChest;
 
@@ -26,6 +27,11 @@ public final class CommandParser implements ICommand {
 	@Override
 	public void processCommand(ICommandSender sender, String[] arguments) {
 		
+		if (plugin.isServer())
+			plugin.log("Is server");
+		else
+			plugin.log("Is client");
+		
 		// -toychest OR -toychest help
 		if (arguments.length == 0 || arguments[0].equals("help"))
 			helpCommand(sender);
@@ -37,7 +43,7 @@ public final class CommandParser implements ICommand {
 		// -toychest <non-applicable command>
 		else {
 			
-			sender.sendChatToPlayer("§4" + "Invalid command: type '/toychest' for help.");
+			sender.sendChatToPlayer(EnumChatFormatting.RED + "Invalid command: type '/toychest' for help.");
 			return;
 		}
 		
@@ -53,9 +59,10 @@ public final class CommandParser implements ICommand {
 	 */
 	private void helpCommand(ICommandSender sender) {
 
-		sender.sendChatToPlayer("§4" + "[Nations at War]" + "§3" + "-=[TOYCHEST]=-");
-		sender.sendChatToPlayer("§e" + "Allows you to edit item values via config");
-		sender.sendChatToPlayer("§e" + "Command List: Reload");
+		sender.sendChatToPlayer(EnumChatFormatting.DARK_RED + "[Nations at War]" + 
+		EnumChatFormatting.DARK_AQUA + "-=[TOYCHEST]=-");
+		sender.sendChatToPlayer(EnumChatFormatting.YELLOW + "Allows you to edit item values via config");
+		sender.sendChatToPlayer(EnumChatFormatting.YELLOW + "Command List: Reload");
 	}
 
 	/**
@@ -68,9 +75,10 @@ public final class CommandParser implements ICommand {
 
 		if (args.length > 1 && args[1].equals("help")) {
 			
-			sender.sendChatToPlayer("§4" + "[Nations at War]" + "§3" + " -=[RELOAD]=-");
-			sender.sendChatToPlayer("§3" + "i.e. '/toychest reload");
-			sender.sendChatToPlayer("§e" + "Reloads the items found in the toy chest.");
+			sender.sendChatToPlayer(EnumChatFormatting.DARK_RED + "[Nations at War]" + 
+			EnumChatFormatting.DARK_AQUA + " -=[RELOAD]=-");
+			sender.sendChatToPlayer(EnumChatFormatting.YELLOW + "i.e. '/toychest reload");
+			sender.sendChatToPlayer(EnumChatFormatting.YELLOW + "Reloads the items found in the toy chest.");
 			return;
 		}
 		
