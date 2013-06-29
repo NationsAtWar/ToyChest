@@ -2,11 +2,12 @@ package org.nationsatwar.toychest.Utility;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.FileConfigurationOptions;
-import org.bukkit.configuration.file.YamlConfiguration;
+import net.minecraftforge.common.ConfigCategory;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
+
 import org.nationsatwar.toychest.Toy;
 import org.nationsatwar.toychest.ToyChest;
 
@@ -29,6 +30,7 @@ public final class ConfigHandler {
 	private static final String toyChestExtension = ".yml";
 	
 	// Miscellaneous Strings
+	private static final String generalCategory = Configuration.CATEGORY_GENERAL;
 	private static final String lineBreak = "\r\n";
 
 	/**
@@ -57,26 +59,44 @@ public final class ConfigHandler {
 		// Cycle through Toychest directory
 		File toyChestDirectory = new File(toyChestPath);
 		
+		plugin.log(toyChestPath);
+		plugin.log(toyChestDirectory.getPath());
+		plugin.log(toyChestDirectory.getAbsolutePath());
+		try {
+			plugin.log(toyChestDirectory.getCanonicalPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		for (File toychestFile : toyChestDirectory.listFiles()) {
 			
 			if (toychestFile.isFile()) {
 				
-				FileConfiguration toychestConfig = YamlConfiguration.loadConfiguration(toychestFile);
+				Configuration toychestConfig = new Configuration(toychestFile);
 				
+                Property itemTypeProp = toychestConfig.get(generalCategory, itemType, "null");
+                Property enabledProp = toychestConfig.get(generalCategory, enabled, "null");
+                
+                itemTypeProp.comment = "Placeholder blah blah blah";
+
 				// If file is valid, create Toy
-				if (toychestConfig.contains(itemType) && toychestConfig.getBoolean(enabled)) {
+				if (toychestConfig.hasKey(generalCategory, itemType) &&
+						enabledProp.getBoolean(false)) {
 					
-					String toyName = toychestConfig.getString(itemType);
-					Toy toy = new Toy(toyName);
+					Toy toy = new Toy(itemTypeProp.getString());
+					
+					toychestConfig.addCustomCategoryComment("Custom", "Custom Category");
+					
+	                Property itemDamageProp = toychestConfig.get(generalCategory, itemDamage, 0);
+	                ConfigCategory customCategory = toychestConfig.getCategory("Custom");
 					
 					// Set toy properties here
-					toy.setDamage(toychestConfig.getInt(itemDamage));
+					toy.setDamage(itemDamageProp.getInt());
 					
 					// Set custom properties here
-					ConfigurationSection customValues = toychestConfig.getConfigurationSection("Custom");
-					
-					for (String key : customValues.getKeys(true))
-						toy.addCustomValue(key, customValues.get(key));
+					for (String key : customCategory.getValues().keySet())
+						toy.addCustomValue(key, customCategory.get(key));
 					
 					plugin.manager.addToy(toy);
 				}
@@ -99,30 +119,23 @@ public final class ConfigHandler {
 	 */
 	private static void createToyChestFile(String itemName) {
 		
-	    File toyChestFile = new File(getFullToyChestPath(itemName));
+	    File toychestFile = new File(getFullToyChestPath(itemName));
 		
-	    FileConfiguration toyChestConfig = YamlConfiguration.loadConfiguration(toyChestFile);
-	    FileConfigurationOptions toyChestConfigOptions = toyChestConfig.options();
+		Configuration toychestConfig = new Configuration(toychestFile);
 
 	    // Creates default config parameters on creation
-	    toyChestConfig.addDefault(itemType, itemName);
-	    toyChestConfig.addDefault(enabled, false);
+		toychestConfig.get(generalCategory, itemType, itemName);
+		toychestConfig.get(generalCategory, enabled, false);
 
-	    toyChestConfig.addDefault(itemDamage, 5);
+		toychestConfig.get(generalCategory, itemDamage, 5);
 
-	    toyChestConfig.addDefault(customRange, 3);
-	    toyChestConfig.addDefault(customWidth, 3);
-	    toyChestConfig.addDefault(customHeight, 3);
-	    
-	    toyChestConfigOptions.copyDefaults(true);
+		toychestConfig.get(generalCategory, customRange, 3);
+		toychestConfig.get(generalCategory, customWidth, 3);
+		toychestConfig.get(generalCategory, customHeight, 3);
 	    
 	    // Add header to config file
 	    String header = "Toy Chest Config File" + lineBreak;
-	    toyChestConfigOptions.header(header);
-	    toyChestConfigOptions.copyHeader(true);
 	    
-	    // Save the file
-	    try { toyChestConfig.save(toyChestFile); }
-	    catch (IOException e) { ToyChest.log("Error saving config file: " + e.getMessage()); }
+	    toychestConfig.save();
 	}
 }

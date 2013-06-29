@@ -1,40 +1,47 @@
 package org.nationsatwar.toychest.Utility;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
 
 import org.nationsatwar.toychest.ToyChest;
 
-public final class CommandParser implements CommandExecutor {
+public final class CommandParser implements ICommand {
 	
-	protected final ToyChest plugin;
+	private final List aliases;
+	
+	private final ToyChest plugin;
 	
 	public CommandParser(ToyChest plugin) {
 		
 		this.plugin = plugin;
+
+	    this.aliases = new ArrayList();
+	    this.aliases.add("toychest");
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String argsLabel, String[] args) {
+	public void processCommand(ICommandSender sender, String[] arguments) {
 		
 		// -toychest OR -toychest help
-		if (args.length == 0 || args[0].equals("help"))
+		if (arguments.length == 0 || arguments[0].equals("help"))
 			helpCommand(sender);
 		
 		// -toychest reload
-		else if (args[0].equals("reload"))
-			reloadCommand(sender, args);
+		else if (arguments[0].equals("reload"))
+			reloadCommand(sender, arguments);
 		
 		// -toychest <non-applicable command>
 		else {
 			
-			sender.sendMessage(ChatColor.DARK_RED + "Invalid command: type '/toychest' for help.");
-			return false;
+			sender.sendChatToPlayer("§4" + "Invalid command: type '/toychest' for help.");
+			return;
 		}
 		
-		return true;
+		return;
 	}
 
 	/**
@@ -44,11 +51,11 @@ public final class CommandParser implements CommandExecutor {
 	 * 
 	 * @param sender  Person sending the command
 	 */
-	private void helpCommand(CommandSender sender) {
+	private void helpCommand(ICommandSender sender) {
 
-		sender.sendMessage(ChatColor.DARK_RED + "[Nations at War]" + ChatColor.DARK_AQUA + " -=[TOYCHEST]=-");
-		sender.sendMessage(ChatColor.YELLOW + "Allows you to edit item values via config");
-		sender.sendMessage(ChatColor.YELLOW + "Command List: Reload");
+		sender.sendChatToPlayer("§4" + "[Nations at War]" + "§3" + "-=[TOYCHEST]=-");
+		sender.sendChatToPlayer("§e" + "Allows you to edit item values via config");
+		sender.sendChatToPlayer("§e" + "Command List: Reload");
 	}
 
 	/**
@@ -57,16 +64,60 @@ public final class CommandParser implements CommandExecutor {
 	 * @param sender  Person sending the command
 	 * @param args  String of arguments associated with the command
 	 */
-	private void reloadCommand(CommandSender sender, String[] args) {
+	private void reloadCommand(ICommandSender sender, String[] args) {
 
 		if (args.length > 1 && args[1].equals("help")) {
 			
-			sender.sendMessage(ChatColor.DARK_RED + "[Nations at War]" + ChatColor.DARK_AQUA + " -=[RELOAD]=-");
-			sender.sendMessage(ChatColor.DARK_AQUA + "i.e. '/toychest reload");
-			sender.sendMessage(ChatColor.YELLOW + "Reloads the items found in the toy chest.");
+			sender.sendChatToPlayer("§4" + "[Nations at War]" + "§3" + " -=[RELOAD]=-");
+			sender.sendChatToPlayer("§3" + "i.e. '/toychest reload");
+			sender.sendChatToPlayer("§e" + "Reloads the items found in the toy chest.");
 			return;
 		}
 		
+		plugin.log("Hi");
 		ConfigHandler.reloadToys(plugin);
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		
+		return 0;
+	}
+
+	@Override
+	public String getCommandName() {
+		
+		return aliases.get(0).toString();
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender icommandsender) {
+		
+		return aliases.get(0).toString() + "<text>";
+	}
+
+	@Override
+	public List getCommandAliases() {
+		
+		return aliases;
+	}
+	
+	@Override
+	public boolean canCommandSenderUseCommand(ICommandSender icommandsender) {
+		
+		return true;
+	}
+
+	@Override
+	public List addTabCompletionOptions(ICommandSender icommandsender,
+			String[] astring) {
+		
+		return null;
+	}
+
+	@Override
+	public boolean isUsernameIndex(String[] astring, int i) {
+		
+		return false;
 	}
 }
