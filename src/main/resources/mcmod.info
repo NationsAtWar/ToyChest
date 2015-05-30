@@ -1,0 +1,16 @@
+[
+{
+  "modid": "toychest",
+  "name": "ToyChest",
+  "description": "Items mod",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Aculem"],
+  "credits": "The Nations at War staff",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
