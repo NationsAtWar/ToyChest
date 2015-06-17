@@ -4,17 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 
-import org.nationsatwar.toychest.ToyChest;
-
 public class ClientProxy extends CommonProxy {
 	
 	@Override
-	public void registerRender(Item item) {
+	public void registerRender(Item item, String modID) {
 		
 		String itemName = item.getUnlocalizedName().substring(5);
-		itemName = "test";
 		
-		ModelResourceLocation resourceLocation = new ModelResourceLocation(ToyChest.MODID + ":" + itemName, "inventory");
+		ModelResourceLocation resourceLocation = new ModelResourceLocation(modID + ":" + itemName, "inventory");
 		
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, resourceLocation);
 	}

@@ -58,14 +58,14 @@ public class ToyChest {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		
-		
+		Toy.register(new SomeItem("test"), ToyChest.MODID);
+		Toy.register(new SomeItem("test2"), ToyChest.MODID);
 	}
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		
-		Toy.register(new SomeItem("test"));
-		Toy.register(new SomeItem("test2"));
+		
 	}
 	
 	/**
